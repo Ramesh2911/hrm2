@@ -270,7 +270,7 @@ router.post('/forgot-password', async (req, res) => {
       const resetLink = `http://localhost:3001/reset-password/${token}`;
 
       const mailOptions = {
-         from: 'janaramesh15@gmail.com',
+         from: 'aunified7@gmail.com',
          to: user[0].username,
          subject: 'Password Reset Request',
          html: `<p>Click the link below to reset your password. The link is valid for 1 hour:</p>

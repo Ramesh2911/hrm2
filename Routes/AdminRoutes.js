@@ -44,9 +44,9 @@ const generateEmpId = async () => {
       if (rows.length > 0) {
          const lastEmpId = rows[0].emp_id;
          const lastNumber = parseInt(lastEmpId.split('-')[1]);
-         newEmpId = `RAD-${lastNumber + 1}`;
+         newEmpId = `UNI-${lastNumber + 1}`;
       } else {
-         newEmpId = 'RAD-1001';
+         newEmpId = 'UNI-1001';
       }
 
       return newEmpId;
@@ -59,8 +59,8 @@ const generateEmpId = async () => {
 const transporter = nodemailer.createTransport({
    service: 'Gmail',
    auth: {
-      user: 'janaramesh15@gmail.com',
-      pass: 'oglwtaangkovbeqg',
+      user: 'aunified7@gmail.com',
+      pass: 'uwgqssbdlakcmspa',
    },
    debug: true,
    logger: true

@@ -582,12 +582,26 @@ router.post('/add-employee', upload.fields([
       const leaveSql = `INSERT INTO leaves (${leaveInsertFields}) VALUES (${leavePlaceholders})`;
       await con.execute(leaveSql, leaveValues);
 
-      const mailOptions = {
-         from: 'aunified7@gmail.com',
-         to: initialValues.email,
-         subject: 'Welcome to Radiance IT',
-         text: `Dear ${initialValues.first_name},\n\nWe are pleased to inform you that your employee account with Radiance IT has been successfully created.\n\nLogin URL:https://radiancehrm.uk/\nUsername: ${initialValues.email}\nPassword: ${defaultPassword}\n\nFor security reasons, please change your password immediately after logging in.\n\nIf you have any questions or need assistance, feel free to reach out to our support team.\n\nBest regards,\nRadiance IT Team`
-      };
+     const mailOptions = {
+  from: 'aunified7@gmail.com',
+  to: initialValues.email,
+  subject: 'Welcome to Unified Europe Ltd',
+  text: `Dear ${initialValues.first_name},
+
+We are pleased to inform you that your employee account with Unified Europe Ltd has been successfully created.
+
+Login URL: https://unified-eu.co.uk
+Username: ${initialValues.email}
+Password: ${defaultPassword}
+
+For security reasons, please change your password immediately after logging in.
+
+If you have any questions or need assistance, feel free to reach out to our support team.
+
+Best regards,
+Unified Europe Ltd`
+};
+
 
       transporter.sendMail(mailOptions, (mailErr) => {
          if (mailErr) {
@@ -2165,3 +2179,4 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+

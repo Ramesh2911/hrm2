@@ -60,7 +60,7 @@ const transporter = nodemailer.createTransport({
    service: 'Gmail',
    auth: {
       user: 'aunified7@gmail.com',
-      pass: 'uwgqssbdlakcmspa',
+      pass: 'wsqbpetdlvrmxawn',
    },
    debug: true,
    logger: true
@@ -583,7 +583,7 @@ router.post('/add-employee', upload.fields([
       await con.execute(leaveSql, leaveValues);
 
       const mailOptions = {
-         from: 'janaramesh15@gmail.com',
+         from: 'aunified7@gmail.com',
          to: initialValues.email,
          subject: 'Welcome to Radiance IT',
          text: `Dear ${initialValues.first_name},\n\nWe are pleased to inform you that your employee account with Radiance IT has been successfully created.\n\nLogin URL:https://radiancehrm.uk/\nUsername: ${initialValues.email}\nPassword: ${defaultPassword}\n\nFor security reasons, please change your password immediately after logging in.\n\nIf you have any questions or need assistance, feel free to reach out to our support team.\n\nBest regards,\nRadiance IT Team`
@@ -2162,5 +2162,6 @@ router.get('/logout', (req, res) => {
    res.clearCookie('token');
    return res.json({ Status: true });
 });
+
 
 export { router as AdminRoutes };

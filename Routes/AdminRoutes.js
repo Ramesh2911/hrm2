@@ -57,13 +57,18 @@ const generateEmpId = async () => {
 };
 
 const transporter = nodemailer.createTransport({
-   service: 'Gmail',
-   auth: {
-      user: 'aunified7@gmail.com',
-      pass: 'wsqbpetdlvrmxawn',
-   },
-   debug: true,
-   logger: true
+  host: 'smtp.gmail.com',
+  port: 465,           
+  secure: true,       
+  auth: {
+    user: 'aunified7@gmail.com',
+    pass: 'wsqbpetdlvrmxawn', 
+  },
+  connectionTimeout: 10000,  
+  greetingTimeout: 5000,     
+  socketTimeout: 20000,      
+  debug: true,
+  logger: true
 });
 
 //Authenticate
@@ -2179,4 +2184,5 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 

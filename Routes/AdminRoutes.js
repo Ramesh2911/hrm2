@@ -61,8 +61,8 @@ const transporter = nodemailer.createTransport({
   port: 465,           
   secure: true,       
   auth: {
-    user: 'aunified7@gmail.com',
-    pass: 'wsqbpetdlvrmxawn', 
+    user: 'radiancelondonltd@gmail.com',
+    pass: 'xzfbzyxouahsvhjy', 
   },
   connectionTimeout: 10000,  
   greetingTimeout: 5000,     
@@ -588,7 +588,7 @@ router.post('/add-employee', upload.fields([
       await con.execute(leaveSql, leaveValues);
 
      const mailOptions = {
-  from: 'aunified7@gmail.com',
+  from: 'radiancelondonltd@gmail.com',
   to: initialValues.email,
   subject: 'Welcome to Unified Europe Ltd',
   text: `Dear ${initialValues.first_name},
@@ -2184,5 +2184,6 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 

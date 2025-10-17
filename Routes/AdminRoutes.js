@@ -531,11 +531,12 @@ router.post('/add-employee', upload.fields([
    };
 
    try {
-      const defaultPassword = 'RAD@123';
+      const defaultPassword = 'UNI@123';
       const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 
       const emp_id = await generateEmpId();
 
+      // Check if user already exists
       const checkUserSql = 'SELECT * FROM users WHERE username = ?';
       const [checkResult] = await con.execute(checkUserSql, [initialValues.email]);
 
@@ -543,6 +544,7 @@ router.post('/add-employee', upload.fields([
          return res.status(400).json({ error: 'Username already exists. Please use a different email.' });
       }
 
+      // Insert into employee_data
       const employeeData = { ...initialValues, emp_id, password: hashedPassword };
       const employeeInsertFields = Object.keys(employeeData).join(', ');
       const employeePlaceholders = Object.keys(employeeData).map(() => '?').join(', ');
@@ -551,6 +553,7 @@ router.post('/add-employee', upload.fields([
       const employeeSql = `INSERT INTO employee_data (${employeeInsertFields}) VALUES (${employeePlaceholders})`;
       const [result] = await con.execute(employeeSql, employeeValues);
 
+      // Insert into users table
       const userData = {
          username: initialValues.email,
          password: hashedPassword,
@@ -568,6 +571,7 @@ router.post('/add-employee', upload.fields([
       const userSql = `INSERT INTO users (${userInsertFields}) VALUES (${userPlaceholders})`;
       const [userResult] = await con.execute(userSql, userValues);
 
+      // Insert into leaves table
       const leaveData = {
          emp_id: emp_id,
          first_name: initialValues.first_name,
@@ -582,40 +586,14 @@ router.post('/add-employee', upload.fields([
       const leaveSql = `INSERT INTO leaves (${leaveInsertFields}) VALUES (${leavePlaceholders})`;
       await con.execute(leaveSql, leaveValues);
 
-    const mailOptions = {
-  from: '"Unified Europe Ltd" <janaramesh15@gmail.com>',  
-  to: initialValues.email,
-  subject: 'Welcome to Unified Europe Ltd',
-  text: `Dear ${initialValues.first_name},
-
-We are pleased to inform you that your employee account with Unified Europe Ltd has been successfully created.
-
-Login URL: https://unified-eu.co.uk
-Username: ${initialValues.email}
-Password: ${defaultPassword}
-
-For security reasons, please change your password immediately after logging in.
-
-If you have any questions or need assistance, feel free to reach out to our support team.
-
-Best regards,
-Unified Europe Ltd
-`
-};
-
-
-      transporter.sendMail(mailOptions, (mailErr) => {
-         if (mailErr) {
-            console.error('Error sending email:', mailErr);
-            return res.status(500).json({ error: 'Error sending email' });
-         }
-
-         res.status(200).json({
-            emp_id,
-            id: result.insertId,
-            user_id: userResult.insertId,
-            message: 'Employee added successfully, credentials sent via email'
-         });
+     
+      res.status(200).json({
+         emp_id,
+         id: result.insertId,
+         user_id: userResult.insertId,
+         username: initialValues.email,
+         password: defaultPassword,
+         message: 'Employee added successfully.'
       });
 
    } catch (error) {
@@ -623,6 +601,7 @@ Unified Europe Ltd
       res.status(500).json({ error: 'Error generating employee ID or hashing password' });
    }
 });
+
 
 //List Emp
 router.get('/employees', async (req, res) => {
@@ -2180,6 +2159,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

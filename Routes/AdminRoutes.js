@@ -582,8 +582,8 @@ router.post('/add-employee', upload.fields([
       const leaveSql = `INSERT INTO leaves (${leaveInsertFields}) VALUES (${leavePlaceholders})`;
       await con.execute(leaveSql, leaveValues);
 
-     const mailOptions = {
-  from: 'aunified7@gmail.com',
+    const mailOptions = {
+  from: '"Unified Europe Ltd" <aunified7@gmail.com>',  
   to: initialValues.email,
   subject: 'Welcome to Unified Europe Ltd',
   text: `Dear ${initialValues.first_name},
@@ -599,7 +599,8 @@ For security reasons, please change your password immediately after logging in.
 If you have any questions or need assistance, feel free to reach out to our support team.
 
 Best regards,
-Unified Europe Ltd`
+Unified Europe Ltd
+`
 };
 
 
@@ -2179,6 +2180,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

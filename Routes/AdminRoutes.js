@@ -57,18 +57,13 @@ const generateEmpId = async () => {
 };
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,           
-  secure: true,       
-  auth: {
-    user: 'radiancelondonltd@gmail.com',
-    pass: 'xzfbzyxouahsvhjy', 
-  },
-  connectionTimeout: 10000,  
-  greetingTimeout: 5000,     
-  socketTimeout: 20000,      
-  debug: true,
-  logger: true
+   service: 'Gmail',
+   auth: {
+      user: 'aunified7@gmail.com',
+      pass: 'uwgqssbdlakcmspa',
+   },
+   debug: true,
+   logger: true
 });
 
 //Authenticate
@@ -588,7 +583,7 @@ router.post('/add-employee', upload.fields([
       await con.execute(leaveSql, leaveValues);
 
      const mailOptions = {
-  from: 'radiancelondonltd@gmail.com',
+  from: 'aunified7@gmail.com',
   to: initialValues.email,
   subject: 'Welcome to Unified Europe Ltd',
   text: `Dear ${initialValues.first_name},
@@ -2184,6 +2179,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

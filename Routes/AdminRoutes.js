@@ -59,8 +59,8 @@ const generateEmpId = async () => {
 const transporter = nodemailer.createTransport({
    service: 'Gmail',
    auth: {
-      user: 'aunified7@gmail.com',
-      pass: 'uwgqssbdlakcmspa',
+      user: 'janaramesh15@gmail.com',
+      pass: 'vjzhbmahdwafmxid',
    },
    debug: true,
    logger: true
@@ -583,7 +583,7 @@ router.post('/add-employee', upload.fields([
       await con.execute(leaveSql, leaveValues);
 
     const mailOptions = {
-  from: '"Unified Europe Ltd" <aunified7@gmail.com>',  
+  from: '"Unified Europe Ltd" <janaramesh15@gmail.com>',  
   to: initialValues.email,
   subject: 'Welcome to Unified Europe Ltd',
   text: `Dear ${initialValues.first_name},
@@ -2180,6 +2180,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

@@ -477,130 +477,152 @@ router.delete('/delete/designation/:id', async (req, res) => {
 });
 
 //Add Emp
-router.post('/add-employee', upload.fields([
-   { name: 'emp_pic', maxCount: 1 },
-   { name: 'passport_doc', maxCount: 1 },
-   { name: 'visa_doc', maxCount: 1 },
-   { name: 'address_doc', maxCount: 1 },
-   { name: 'p45_doc', maxCount: 1 },
-   { name: 'others_doc', maxCount: 1 },
-   { name: 'work_check', maxCount: 1 }
-]), async (req, res) => {
-   const initialValues = {
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      dob: req.body.dob,
-      phone: req.body.phone,
-      alternate_phone: req.body.alternate_phone,
-      email: req.body.email,
-      address1: req.body.address1,
-      address2: req.body.address2,
-      city: req.body.city,
-      post_code: req.body.post_code,
-      gender: req.body.gender,
-      nationality: req.body.nationality,
-      passport_no: req.body.passport_no,
-      passport_issue_date: req.body.passport_issue_date,
-      passport_expiry_date: req.body.passport_expiry_date,
-      passport_doc: req.files.passport_doc ? req.files.passport_doc[0].filename : null,
-      visa_no: req.body.visa_no,
-      visa_issue_date: req.body.visa_issue_date,
-      visa_expiry_date: req.body.visa_expiry_date,
-      visa_doc: req.files.visa_doc ? req.files.visa_doc[0].filename : null,
-      emp_position: req.body.emp_position,
-      emp_department: req.body.emp_department,
-      salary: req.body.salary,
-      joining_date: req.body.joining_date,
-      emp_pic: req.files.emp_pic ? req.files.emp_pic[0].filename : null,
-      address_doc: req.files.address_doc ? req.files.address_doc[0].filename : null,
-      p45_doc: req.files.p45_doc ? req.files.p45_doc[0].filename : null,
-      others_doc: req.files.others_doc ? req.files.others_doc[0].filename : null,
-      status: req.body.status || "1",
-      ni_number: req.body.ni_number,
-      contracted_hours: req.body.contracted_hours,
-      fulltime_hours: req.body.fulltime_hours,
-      holiday: req.body.holiday,
-      salary_option: req.body.salary_option,
-      probation_period: req.body.probation_period,
-      account_name: req.body.account_name,
-      account_number: req.body.account_number,
-      bank_name: req.body.bank_name,
-      sc_number: req.body.sc_number,
-      notice_period: req.body.notice_period,
-      work_check: req.files.work_check ? req.files.work_check[0].filename : null
-   };
+router.post(
+   '/add-employee',
+   upload.fields([
+      { name: 'emp_pic', maxCount: 1 },
+      { name: 'passport_doc', maxCount: 1 },
+      { name: 'visa_doc', maxCount: 1 },
+      { name: 'address_doc', maxCount: 1 },
+      { name: 'p45_doc', maxCount: 1 },
+      { name: 'others_doc', maxCount: 1 },
+      { name: 'work_check', maxCount: 1 },
+   ]),
+   async (req, res) => {
+      try {
+         const uploadedUrls = {};
+         const uploadFields = [
+            'emp_pic',
+            'passport_doc',
+            'visa_doc',
+            'address_doc',
+            'p45_doc',
+            'others_doc',
+            'work_check',
+         ];
 
-   try {
-      const defaultPassword = 'UNI@123';
-      const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+         // 🔹 Get Cloudinary URLs from req.files
+         for (const field of uploadFields) {
+            uploadedUrls[field] = req.files[field]
+               ? req.files[field][0].path // Cloudinary URL
+               : null;
+         }
 
-      const emp_id = await generateEmpId();
+         const initialValues = {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            dob: req.body.dob,
+            phone: req.body.phone,
+            alternate_phone: req.body.alternate_phone,
+            email: req.body.email,
+            address1: req.body.address1,
+            address2: req.body.address2,
+            city: req.body.city,
+            post_code: req.body.post_code,
+            gender: req.body.gender,
+            nationality: req.body.nationality,
+            passport_no: req.body.passport_no,
+            passport_issue_date: req.body.passport_issue_date,
+            passport_expiry_date: req.body.passport_expiry_date,
+            passport_doc: uploadedUrls.passport_doc,
+            visa_no: req.body.visa_no,
+            visa_issue_date: req.body.visa_issue_date,
+            visa_expiry_date: req.body.visa_expiry_date,
+            visa_doc: uploadedUrls.visa_doc,
+            emp_position: req.body.emp_position,
+            emp_department: req.body.emp_department,
+            salary: req.body.salary,
+            joining_date: req.body.joining_date,
+            emp_pic: uploadedUrls.emp_pic,
+            address_doc: uploadedUrls.address_doc,
+            p45_doc: uploadedUrls.p45_doc,
+            others_doc: uploadedUrls.others_doc,
+            status: req.body.status || '1',
+            ni_number: req.body.ni_number,
+            contracted_hours: req.body.contracted_hours,
+            fulltime_hours: req.body.fulltime_hours,
+            holiday: req.body.holiday,
+            salary_option: req.body.salary_option,
+            probation_period: req.body.probation_period,
+            account_name: req.body.account_name,
+            account_number: req.body.account_number,
+            bank_name: req.body.bank_name,
+            sc_number: req.body.sc_number,
+            notice_period: req.body.notice_period,
+            work_check: uploadedUrls.work_check,
+         };
 
-      // Check if user already exists
-      const checkUserSql = 'SELECT * FROM users WHERE username = ?';
-      const [checkResult] = await con.execute(checkUserSql, [initialValues.email]);
+         const defaultPassword = 'UNI@123';
+         const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+         const emp_id = await generateEmpId();
 
-      if (checkResult.length > 0) {
-         return res.status(400).json({ error: 'Username already exists. Please use a different email.' });
+         // 🔹 Check duplicate user
+         const [existingUser] = await con.execute(
+            'SELECT * FROM users WHERE username = ?',
+            [initialValues.email]
+         );
+         if (existingUser.length > 0) {
+            return res
+               .status(400)
+               .json({ error: 'Username already exists. Please use a different email.' });
+         }
+
+         // 🔹 Insert into employee_data
+         const employeeData = { ...initialValues, emp_id, password: hashedPassword };
+         const employeeSql = `INSERT INTO employee_data (${Object.keys(employeeData).join(
+            ', '
+         )}) VALUES (${Object.keys(employeeData)
+            .map(() => '?')
+            .join(', ')})`;
+         const [result] = await con.execute(employeeSql, Object.values(employeeData));
+
+         // 🔹 Insert into users
+         const userData = {
+            username: initialValues.email,
+            password: hashedPassword,
+            role_id: 2,
+            role_name: 'EMPLOYEE',
+            status: 1,
+            created_at: new Date(),
+            updated_at: new Date(),
+         };
+
+         const userSql = `INSERT INTO users (${Object.keys(userData).join(', ')}) VALUES (${Object.keys(
+            userData
+         )
+            .map(() => '?')
+            .join(', ')})`;
+         const [userResult] = await con.execute(userSql, Object.values(userData));
+
+         // 🔹 Insert into leaves
+         const leaveData = {
+            emp_id: emp_id,
+            first_name: initialValues.first_name,
+            last_name: initialValues.last_name,
+            total_leaves: initialValues.holiday,
+         };
+
+         const leaveSql = `INSERT INTO leaves (${Object.keys(leaveData).join(', ')}) VALUES (${Object.keys(
+            leaveData
+         )
+            .map(() => '?')
+            .join(', ')})`;
+         await con.execute(leaveSql, Object.values(leaveData));
+
+         res.status(200).json({
+            emp_id,
+            id: result.insertId,
+            user_id: userResult.insertId,
+            username: initialValues.email,
+            password: defaultPassword,
+            message: 'Employee added successfully.',
+         });
+      } catch (error) {
+         console.error('Error adding employee:', error);
+         res.status(500).json({ error: 'Error adding employee' });
       }
-
-      // Insert into employee_data
-      const employeeData = { ...initialValues, emp_id, password: hashedPassword };
-      const employeeInsertFields = Object.keys(employeeData).join(', ');
-      const employeePlaceholders = Object.keys(employeeData).map(() => '?').join(', ');
-      const employeeValues = Object.values(employeeData);
-
-      const employeeSql = `INSERT INTO employee_data (${employeeInsertFields}) VALUES (${employeePlaceholders})`;
-      const [result] = await con.execute(employeeSql, employeeValues);
-
-      // Insert into users table
-      const userData = {
-         username: initialValues.email,
-         password: hashedPassword,
-         role_id: 2,
-         role_name: 'EMPLOYEE',
-         status: 1,
-         created_at: new Date(),
-         updated_at: new Date()
-      };
-
-      const userInsertFields = Object.keys(userData).join(', ');
-      const userPlaceholders = Object.keys(userData).map(() => '?').join(', ');
-      const userValues = Object.values(userData);
-
-      const userSql = `INSERT INTO users (${userInsertFields}) VALUES (${userPlaceholders})`;
-      const [userResult] = await con.execute(userSql, userValues);
-
-      // Insert into leaves table
-      const leaveData = {
-         emp_id: emp_id,
-         first_name: initialValues.first_name,
-         last_name: initialValues.last_name,
-         total_leaves: initialValues.holiday
-      };
-
-      const leaveInsertFields = Object.keys(leaveData).join(', ');
-      const leavePlaceholders = Object.keys(leaveData).map(() => '?').join(', ');
-      const leaveValues = Object.values(leaveData);
-
-      const leaveSql = `INSERT INTO leaves (${leaveInsertFields}) VALUES (${leavePlaceholders})`;
-      await con.execute(leaveSql, leaveValues);
-
-     
-      res.status(200).json({
-         emp_id,
-         id: result.insertId,
-         user_id: userResult.insertId,
-         username: initialValues.email,
-         password: defaultPassword,
-         message: 'Employee added successfully.'
-      });
-
-   } catch (error) {
-      console.error('Error generating emp_id or hashing password:', error);
-      res.status(500).json({ error: 'Error generating employee ID or hashing password' });
    }
-});
+);
 
 
 //List Emp
@@ -2159,6 +2181,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

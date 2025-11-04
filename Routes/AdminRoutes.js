@@ -2013,24 +2013,28 @@ router.delete('/delete/pay_slips/:id', async (req, res) => {
 router.post('/add/p60', upload.single('doc_file'), async (req, res) => {
    try {
       const { send_to } = req.body;
-      const docFile = req.file ? req.file.filename : null;
       const sender = 1;
       const currentDate = new Date().toISOString().split('T')[0];
+
+      const docFile = req.file ? req.file.path : null; 
+
       if (!send_to || !docFile) {
          return res.status(400).json({ message: 'Please provide all required fields' });
       }
-
+     
       const sql = `INSERT INTO p60 (sender, receiver, doc_file, date) VALUES (?, ?, ?, ?)`;
       const [result] = await con.query(sql, [sender, send_to, docFile, currentDate]);
 
       return res.status(200).json({
          message: 'P60 uploaded successfully',
          p60Id: result.insertId,
-         filePath: `http://127.0.0.1:3000/uploads/${docFile}`
       });
    } catch (err) {
       console.error('Error inserting document:', err);
-      return res.status(500).json({ error: 'Error uploading document', details: err.message });
+      return res.status(500).json({
+         error: 'Error uploading document',
+         details: err.message,
+      });
    }
 });
 
@@ -2099,7 +2103,6 @@ router.put('/update/p60/:id', upload.single('doc_file'), async (req, res) => {
       return res.status(200).json({
          message: 'P60 updated successfully',
          p60Id: id,
-         filePath: docFile ? `http://127.0.0.1:3000/uploads/${docFile}` : null
       });
    } catch (err) {
       console.error('Error updating document:', err);
@@ -2181,6 +2184,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

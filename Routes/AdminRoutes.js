@@ -1892,7 +1892,7 @@ router.delete('/delete/document/:id', async (req, res) => {
 router.post('/add/pay_slips', upload.single('doc_file'), async (req, res) => {
    try {
       const { send_to, first_name, last_name } = req.body;
-      const docFile = req.file ? req.file.filename : null;
+      const docFile = req.file ? req.file.path : null;
       const sender = 1;
       const currentDate = new Date().toISOString().split('T')[0];
 
@@ -2184,6 +2184,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 

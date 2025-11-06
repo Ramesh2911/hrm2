@@ -1805,7 +1805,7 @@ router.get('/fetch-employee/:emp_id', async (req, res) => {
 router.post('/upload-document', upload.single('doc_file'), async (req, res) => {
    try {
       const { sender, send_to: receiver, emp_id } = req.body;
-      const docFile = req.file ? req.file.filename : req.body.doc_file;
+      const docFile = req.file ? req.file.path : req.body.doc_file;
 
       if (!docFile) {
          return res.status(400).json({ error: 'No file uploaded' });
@@ -1828,7 +1828,6 @@ router.post('/upload-document', upload.single('doc_file'), async (req, res) => {
       return res.status(200).json({
          message: 'Document uploaded successfully',
          documentId: result.insertId,
-         filePath: `http://127.0.0.1:3000/uploads/${docFile}`
       });
    } catch (err) {
       console.error('Error inserting document:', err);
@@ -1911,7 +1910,6 @@ router.post('/add/pay_slips', upload.single('doc_file'), async (req, res) => {
       return res.status(200).json({
          message: 'Pay-slips uploaded successfully',
          paySlipsId: paySlipResult.insertId,
-         filePath: `http://127.0.0.1:3000/uploads/${docFile}`
       });
    } catch (err) {
       console.error('Error inserting document:', err);
@@ -2184,6 +2182,7 @@ router.get('/logout', (req, res) => {
 
 
 export { router as AdminRoutes };
+
 
 
 
